@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+venv/
+*.pyc
+
+# Project specific
+uploads/
+*.mp4
+*.mkv
+*.avi
+
+# OS files
+.DS_Store
+Thumbs.db
