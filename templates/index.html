@@ -41,15 +41,18 @@
             const res = await fetch('/upload', { method: 'POST', body: formData });
             const data = await res.json();
 
-            if (data.success) {
-                videoFilename = data.filename;
-                const previewImage = document.getElementById('previewImage');
-                previewImage.src = data.preview_url + '?t=' + Date.now();
-                document.querySelector('.img-container').style.display = 'block';
-                
-                if (cropper) cropper.destroy();
-                cropper = new Cropper(previewImage, { viewMode: 1, zoomable: false });
+            if (!data.success) {
+                document.getElementById('results').innerText = data.error || 'Upload failed';
+                return;
             }
+
+            videoFilename = data.filename;
+            const previewImage = document.getElementById('previewImage');
+            previewImage.src = data.preview_url + '?t=' + Date.now();
+            document.querySelector('.img-container').style.display = 'block';
+            
+            if (cropper) cropper.destroy();
+            cropper = new Cropper(previewImage, { viewMode: 1, zoomable: false });
         });
 
         document.getElementById('extractBtn').addEventListener('click', async () => {
@@ -63,6 +66,10 @@
                 body: JSON.stringify({ filename: videoFilename, ...cropData })
             });
             const data = await res.json();
+            if (!data.success) {
+                document.getElementById('results').innerText = data.error || 'Extraction failed';
+                return;
+            }
             document.getElementById('results').innerText = data.script || "No text found.";
         });
     </script>
